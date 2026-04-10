@@ -15,7 +15,6 @@ if SECRET_KEY is None:
 
 ALGORITHM = "HS256"
 
-# 🔥 IMPORTANT
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 
@@ -23,16 +22,17 @@ def get_current_user(
     token: str = Depends(oauth2_scheme),
     db: Session = Depends(get_db)
 ):
-    print("TOKEN:", token)  # 🔥 DEBUG
 
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        print("PAYLOAD:", payload)
+      payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+      email = payload.get("sub")
 
-        email = payload.get("sub")
-
+      if not email:
+        raise HTTPException(status_code==401, detail="Invalid token payload")
+      
+    except HTTPException:
+        raise 
     except Exception as e:
-        print("JWT ERROR:", e)
         raise HTTPException(status_code=401, detail="Invalid token")
 
     user = db.query(User).filter(User.email == email).first()

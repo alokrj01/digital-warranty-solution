@@ -12,7 +12,7 @@ def normalize_date(date_str: str):
     for fmt in formats:
         try:
             clean = re.sub(r",?\s+\d{2}:\d{2}\s+[AP]M", "", date_str.strip())
-            return datetime.strptime(date_str.strip(), fmt).strftime("%Y-%m-%d")
+            return datetime.strptime(clean, fmt).strftime("%Y-%m-%d")
         except:
             continue
     return None
@@ -79,38 +79,38 @@ def extract_amount(text: str):
 
 
 def extract_product(text: str):
-     # Strategy 0: Paytm style — "Operator" header ke baad ki line mein second word
-    lines = text.split("\n")
-    for i, line in enumerate(lines):
+  # Strategy 0: Paytm style — extract from line after "Operator" header
+  lines = text.split("\n")
+  for i, line in enumerate(lines):
        if line.strip().lower() == "operator":
             for j in range(i+1, min(i+6, len(lines))):
                 next_line = lines[j].strip()
                 if not next_line:
                     continue
-                # Skip karo agar ye sirf header words hain
+                
                 skip = ["total", "amount", "paid", "recharge", "number", "payment"]
                 if any(s in next_line.lower() for s in skip):
                     continue
-                # Skip karo pure numbers
+               
                 if re.match(r"^[\d\s\.\,]+$", next_line):
                     continue
-                # Ye clean word hai — return karo
+                
                 return next_line.strip()
             break
     
     # Strategy 1: "Operator" label → next token on same line
-    op_match = re.search(r"Operator\s*\n?\s*(.+)", text, re.IGNORECASE)
-    if op_match:
+  op_match = re.search(r"Operator\s*\n?\s*(.+)", text, re.IGNORECASE)
+  if op_match:
         val = op_match.group(1).strip().split("\n")[0].strip()
         if val and not val.isdigit() and len(val) > 1:
             return val
 
     # Strategy 2: "Merchant / Store / Paid to" labels
-    label_patterns = [
+  label_patterns = [
         r"(?:Merchant|Store|Shop|Vendor|Brand|Service|Paid\s+to)\s*[:\-]?\s*(.+)",
         r"(?:Recharge\s+of|Bill\s+for)\s+(.+)",
     ]
-    for pattern in label_patterns:
+  for pattern in label_patterns:
         match = re.search(pattern, text, re.IGNORECASE)
         if match:
             val = match.group(1).strip().split("\n")[0]
@@ -118,7 +118,7 @@ def extract_product(text: str):
                 return val
 
     # Strategy 3: First clean meaningful line (skip noise)
-    skip_keywords = [
+  skip_keywords = [
         "total", "amount", "tax", "invoice", "receipt", "bill",
         "qty", "price", "subtotal", "payment", "date", "order",
         "transaction", "upi", "gst", "hsn", "rs.", "inr",
@@ -126,7 +126,7 @@ def extract_product(text: str):
         "recharge", "operator", "convenience", "reference",
         "कुल", "जमा", "रकम", "रसीद", "बिल", "कर"
     ]
-    for line in text.split("\n"):
+  for line in text.split("\n"):
         line = line.strip()
         if len(line) < 3:
             continue
@@ -136,7 +136,7 @@ def extract_product(text: str):
             continue
         return line
 
-    return "Unknown Product"
+  return "Unknown Product"
 
 
 def extract_data(text: str):

@@ -17,6 +17,6 @@ temp/
 # Uploads (user data)
 uploads/
 
-# VS Code
+# IDEs
 .vscode/
 .idea/
