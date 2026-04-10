@@ -1,4 +1,5 @@
-from fastapi import Depends, HTTPException, Header
+from fastapi import Depends, HTTPException
+from fastapi.security import OAuth2PasswordBearer
 from jose import jwt
 from sqlalchemy.orm import Session
 from app.db.database import get_db
@@ -9,20 +10,24 @@ from dotenv import load_dotenv
 load_dotenv()
 
 SECRET_KEY = os.getenv("SECRET_KEY")
+if SECRET_KEY is None:
+    raise ValueError("SECRET_KEY not set in environment")
+
 ALGORITHM = "HS256"
 
-def get_current_user(authorization: str = Header(None), db: Session = Depends(get_db)):
-    
-    print("AUTH HEADER:", authorization)  # 🔥 DEBUG
+# 🔥 IMPORTANT
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
-    if not authorization:
-        raise HTTPException(status_code=401, detail="No token provided")
 
-    token = authorization.replace("Bearer ", "")
+def get_current_user(
+    token: str = Depends(oauth2_scheme),
+    db: Session = Depends(get_db)
+):
+    print("TOKEN:", token)  # 🔥 DEBUG
 
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        print("PAYLOAD:", payload)  # 🔥 DEBUG
+        print("PAYLOAD:", payload)
 
         email = payload.get("sub")
 

@@ -1,19 +1,22 @@
 # Python
+# Environment
+.env
+myenv/
 __pycache__/
 *.pyc
 
-# Virtual env
-venv/
-myenv/
-.env
+# Database (local only)
+*.db
+*.sqlite3
 
-# Uploads / temp
-uploads/
+# Credentials (IMPORTANT — never push!)
+credentials/
+vision-key.json
 temp/
 
-# DB
-*.db
+# Uploads (user data)
+uploads/
 
-# IDE
+# VS Code
 .vscode/
 .idea/
