@@ -28,7 +28,7 @@ def get_current_user(
       email = payload.get("sub")
 
       if not email:
-        raise HTTPException(status_code==401, detail="Invalid token payload")
+        raise HTTPException(status_code=401, detail="Invalid token payload")
       
     except HTTPException:
         raise 

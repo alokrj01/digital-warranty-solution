@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Numeric, Date, ForeignKey
+from sqlalchemy import Column, Integer, String, Numeric, ForeignKey
 from app.db.database import Base
 
 class Product(Base):

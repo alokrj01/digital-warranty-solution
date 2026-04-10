@@ -44,6 +44,18 @@ async def upload_receipt(file: UploadFile = File(...),
 
     logger.debug("OCR text preview: %s", extracted_text[:100] if extracted_text else "")
 
+    # Parsing required fields
+    product_name = parsed_data.get("product")
+    purchase_date = parsed_data.get("date")
+    amount = parsed_data.get("amount")
+
+    if not product_name or not purchase_date:
+        raise HTTPException(
+            status_code=422,
+            detail="Could not extract required fields from receipt. Please upload a clearer image."
+        )
+
+
     #expiry calculation
     expiry_date = None
 
@@ -56,17 +68,7 @@ async def upload_receipt(file: UploadFile = File(...),
       logger.warning("Failed to calculate expiry date: %s", e)
       expiry_date = None
 
-    # Parsing required fields
-    product_name = parsed_data.get("product")
-    purchase_date = parsed_data.get("date")
-    amount = parsed_data.get("amount")
-
-    if not product_name or not purchase_date:
-     raise HTTPException(
-        status_code=422,
-        detail="Could not extract required fields from receipt. Please upload a clearer image."
-    )
-
+    
     # Save to DB
     new_product = Product(
         name=product_name,
