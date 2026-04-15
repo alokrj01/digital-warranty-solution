@@ -20,7 +20,7 @@ def get_warranty_status(expiry_date_str):
     except:
         return "unknown"
 
-@router.get("/")
+@router.get("")
 def get_products(
     current_user=Depends(get_current_user),
     db: Session = Depends(get_db)

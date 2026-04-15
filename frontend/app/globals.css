@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+@theme {
+  /*  Default sans font: Outfit Font  */
+  --font-sans: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+  
+  /* Add custom color here  */
+  --color-brand: #2563eb; 
+}
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+body {
+  @apply antialiased text-slate-900 bg-slate-50;
+}
