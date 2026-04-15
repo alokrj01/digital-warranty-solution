@@ -54,7 +54,7 @@ export default function RegisterPage() {
       console.error("[RegistrationError]:", error.response?.data);
       const errorDetail = error.response?.data?.detail;
       if (Array.isArray(errorDetail)) {
-        toast.error(errorDetail[0].msg);
+        toast.error(errorDetail[0].msg || "Invalid data submitted");
       } else {
         toast.error(errorDetail || "Registration failed. Try again.");
       }

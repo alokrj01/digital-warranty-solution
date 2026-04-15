@@ -74,9 +74,9 @@ export default function Home() {
               className="group-hover:translate-x-1 transition-transform"
             />
           </Link>
-          <button className="bg-white border border-slate-200 text-slate-700 px-10 py-4 rounded-2xl font-bold hover:bg-slate-50 transition-all active:scale-95">
+          {/* <button className="bg-white border border-slate-200 text-slate-700 px-10 py-4 rounded-2xl font-bold hover:bg-slate-50 transition-all active:scale-95">
             View Demo
-          </button>
+          </button> */ }
         </div>
 
         {/* --- Features Grid (Bento Style) --- */}

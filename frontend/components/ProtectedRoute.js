@@ -25,21 +25,24 @@ export default function ProtectedRoute({ children }) {
      * NOTE: In production, you might want to call an API here 
      * to verify if the token is still valid/expired.
      */
-    const verifySession = () => {
-      const token = localStorage.getItem('token');
-      
-      if (!token) {
-        // Replace current history entry to prevent back-button loops
-        router.replace('/login');
-      } else {
-        setAuthenticated(true);
-        // Chota sa delay for premium feel
-        setTimeout(() => setIsChecking(false), 800);
-      }
-    };
 
-    verifySession();
-  }, [router]);
+  let timeoutId;
+  const verifySession = () => {
+    const token = localStorage.getItem('token');
+    
+    if (!token) {
+      // Replace current history entry to prevent back-button loops
+      router.replace('/login');
+    } else {
+      setAuthenticated(true);
+      // Make little delay for better feel
+      timeoutId = setTimeout(() => setIsChecking(false), 800);
+    }
+  };
+
+  verifySession();
+  return () => clearTimeout(timeoutId);
+}, [router]);
 
   /**
    * Premium Loading Screen:
